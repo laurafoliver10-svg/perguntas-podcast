@@ -1,0 +1,124 @@
+<html style="margin:0;padding:0;">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+(function(){
+  var s = document.createElement('style');
+  s.textContent = ':root{--bg:#fdf9fb;--card:#ffffff;--text:#0f172a;--muted:#64748b;--accent:#dc2626;--border:rgba(15,23,42,.1)}.bg-pattern{background-image:url("https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/0690cf70baae403abf3728bebaf2d797.jpeg~tplv-0es2k971ck-image.image?rcl=202608271000279916EDED04D0B946006A&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1790388114&x-signature=WEe%2B6kd0A%2FcnI3EdEiqWGQilMko%3D");background-size:cover;background-position:center;background-attachment:fixed}.overlay{background:rgba(255,255,255,0.92);backdrop-filter:blur(2px)}.proj-container{min-height:600px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 40px}.proj-question{font-size:42px;font-weight:700;line-height:1.3;max-width:900px;margin-bottom:24px;color:var(--text)}.proj-name{font-size:20px;color:var(--muted);font-weight:500}.proj-header{position:absolute;top:30px;left:40px;right:40px;display:flex;justify-content:space-between;align-items:center}.proj-live{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:20px;background:var(--accent);color:#fff;font-weight:600;font-size:14px;letter-spacing:.05em}.live-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1.5s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}.proj-count{font-size:14px;color:var(--muted);font-weight:500}.proj-empty{font-size:28px;color:var(--muted);font-weight:500;text-align:center}.proj-nav{position:absolute;bottom:40px;left:0;right:0;display:flex;justify-content:center;gap:12px}.proj-nav button{padding:12px 24px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;font-family:"Urbanist",sans-serif;transition:all .2s}.proj-nav button:hover{border-color:var(--accent);color:var(--accent)}.proj-nav button:disabled{opacity:.4;cursor:not-allowed}';
+  document.head.appendChild(s);
+})();
+</script>
+<div style="background-color:transparent;box-sizing:border-box;">
+  <div class="bg-pattern" style="color:var(--text);font-family:'Urbanist',sans-serif;min-height:100%;">
+    <div class="overlay" style="min-height:100%;">
+      <div class="max-w-5xl mx-auto px-6 py-8">
+        <div class="rounded-2xl" style="background:var(--card);border:1px solid var(--border);box-shadow:0 4px 30px rgba(0,0,0,.08);position:relative;overflow:hidden;min-height:650px;">
+          <div class="proj-header">
+            <div class="proj-live">
+              <span class="live-dot"></span>
+              AO VIVO
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div class="proj-count" id="projCounter">Pergunta 0 de 0</div>
+              <button id="refreshBtn" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;cursor:pointer;font-family:'Urbanist',sans-serif;">Atualizar</button>
+            </div>
+          </div>
+          <div class="proj-container" id="projContent">
+            <div class="proj-empty">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 20px;opacity:.3;">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              Nenhuma pergunta selecionada para exibição
+            </div>
+          </div>
+          <div class="proj-nav">
+            <button id="prevBtn" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              Anterior
+            </button>
+            <button id="nextBtn" disabled>
+              Próxima
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-left:4px;">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:12px;">
+          Projeção para o entrevistador - Aperte F11 para tela cheia
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var API_URL = 'https://sheetdb.io/api/v1/a8ufag0exzvp1';
+  var selectedQuestions = [];
+  var currentProjIndex = -1;
+  var projContent = document.getElementById('projContent');
+  var projCounter = document.getElementById('projCounter');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var refreshBtn = document.getElementById('refreshBtn');
+
+  function escapeHtml(text){
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function isSelected(q){
+    return q.selecionada === 'TRUE' || q.selecionada === true;
+  }
+
+  function render(){
+    if(selectedQuestions.length === 0){
+      projContent.innerHTML = '<div class="proj-empty"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 20px;opacity:.3;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Nenhuma pergunta selecionada para exibição<br><span style="font-size:18px;color:var(--muted);margin-top:10px;display:block;">Selecione perguntas na página de organização</span></div>';
+      projCounter.textContent = 'Pergunta 0 de 0';
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      currentProjIndex = -1;
+      return;
+    }
+
+    if(currentProjIndex < 0 || currentProjIndex >= selectedQuestions.length){
+      currentProjIndex = 0;
+    }
+
+    var q = selectedQuestions[currentProjIndex];
+    var colors = ['var(--accent)', '#111111', '#6b7280'];
+    var color = colors[currentProjIndex % 3];
+    
+    projContent.innerHTML = '<div style="margin-bottom:20px;"><div style="display:inline-block;padding:6px 16px;border-radius:20px;background:' + color + ';color:#fff;font-size:13px;font-weight:600;letter-spacing:.05em;">PERGUNTA</div></div><div class="proj-question">"' + escapeHtml(q.pergunta) + '"</div><div class="proj-name">— ' + (q.nome || 'Anônimo') + '</div>';
+    
+    projCounter.textContent = 'Pergunta ' + (currentProjIndex + 1) + ' de ' + selectedQuestions.length;
+    prevBtn.disabled = currentProjIndex === 0;
+    nextBtn.disabled = currentProjIndex >= selectedQuestions.length - 1;
+  }
+
+  function loadSelected(){
+    fetch(API_URL + '?selecionada=TRUE')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      selectedQuestions = data;
+      render();
+    })
+    .catch(function(){ console.log('Erro ao atualizar'); });
+  }
+
+  prevBtn.addEventListener('click', function(){
+    if(currentProjIndex > 0){ currentProjIndex--; render(); }
+  });
+  nextBtn.addEventListener('click', function(){
+    if(currentProjIndex < selectedQuestions.length - 1){ currentProjIndex++; render(); }
+  });
+  refreshBtn.addEventListener('click', loadSelected);
+
+  loadSelected();
+  setInterval(loadSelected, 15000); // Atualiza automaticamente a cada 15 segundos
+})();
+</script>
+</html>

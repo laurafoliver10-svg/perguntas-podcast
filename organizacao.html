@@ -1,0 +1,149 @@
+<html style="margin:0;padding:0;">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+(function(){
+  var s = document.createElement('style');
+  s.textContent = ':root{--bg:#fdf9fb;--card:#ffffff;--text:#0f172a;--muted:#64748b;--accent:#dc2626;--accent-soft:rgba(220,38,38,.12);--accent2:#111111;--accent2-soft:rgba(17,17,17,.08);--border:rgba(15,23,42,.1)}.question-card{transition:transform .2s ease,box-shadow .2s ease}.question-card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.08)}.bg-pattern{background-image:url("https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/0690cf70baae403abf3728bebaf2d797.jpeg~tplv-0es2k971ck-image.image?rcl=202608271000279916EDED04D0B946006A&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1790388114&x-signature=WEe%2B6kd0A%2FcnI3EdEiqWGQilMko%3D");background-size:cover;background-position:center;background-attachment:fixed}.overlay{background:rgba(255,255,255,0.92);backdrop-filter:blur(2px)}.selected-badge{background:var(--accent);color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px}.checkbox-custom{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}.checkbox-custom.checked{background:var(--accent);border-color:var(--accent)}.checkbox-custom.checked::after{content:"✓";color:#fff;font-size:14px;font-weight:700}.filter-btn{transition:all .2s}.filter-btn.active{background:var(--accent-soft)!important;color:var(--accent)!important;border-color:var(--accent)!important}.loading{text-align:center;padding:40px;color:var(--muted);font-size:14px;}';
+  document.head.appendChild(s);
+})();
+</script>
+<div style="background-color:transparent;box-sizing:border-box;">
+  <div class="bg-pattern" style="color:var(--text);font-family:'Urbanist',sans-serif;min-height:100%;">
+    <div class="overlay" style="min-height:100%;">
+      <div class="max-w-4xl mx-auto px-6 py-10">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+          <div>
+            <h1 class="text-2xl font-bold" style="color:var(--text);display:flex;align-items:center;gap:10px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent2);">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              Central de Organização
+            </h1>
+            <p style="color:var(--muted);font-size:14px;margin-top:4px;">Acesso restrito - Clique no quadrado para selecionar/deselecionar</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <span id="totalBadge" style="padding:6px 14px;border-radius:20px;background:var(--accent2-soft);color:var(--accent2);font-size:13px;font-weight:700;">0 totais</span>
+            <span id="selectedBadge" style="padding:6px 14px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:700;border:1px solid var(--accent);">0 selecionadas</span>
+            <button id="refreshBtn" style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;font-family:'Urbanist',sans-serif;display:flex;align-items:center;gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              Atualizar
+            </button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;">
+          <button class="filter-btn active" data-filter="all" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Urbanist',sans-serif;">Todas</button>
+          <button class="filter-btn" data-filter="selected" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;font-family:'Urbanist',sans-serif;">Selecionadas</button>
+          <button class="filter-btn" data-filter="pending" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;font-family:'Urbanist',sans-serif;">Pendentes</button>
+        </div>
+        <div id="manageList" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="loading">Carregando perguntas...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var API_URL = 'https://sheetdb.io/api/v1/a8ufag0exzvp1';
+  var questions = [];
+  var currentFilter = 'all';
+  var manageList = document.getElementById('manageList');
+  var totalBadge = document.getElementById('totalBadge');
+  var selectedBadge = document.getElementById('selectedBadge');
+  var filterBtns = document.querySelectorAll('.filter-btn');
+  var refreshBtn = document.getElementById('refreshBtn');
+
+  filterBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      currentFilter = btn.dataset.filter;
+      filterBtns.forEach(function(b){ b.classList.toggle('active', b.dataset.filter === currentFilter); });
+      renderList();
+    });
+  });
+
+  refreshBtn.addEventListener('click', loadQuestions);
+
+  function escapeHtml(text){
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function updateBadges(){
+    var total = questions.length;
+    var selected = questions.filter(function(q){ return q.selecionada === 'TRUE' || q.selecionada === true; }).length;
+    totalBadge.textContent = total + ' total' + (total !== 1 ? 'is' : '');
+    selectedBadge.textContent = selected + ' selecionada' + (selected !== 1 ? 's' : '');
+  }
+
+  function isSelected(q){
+    return q.selecionada === 'TRUE' || q.selecionada === true;
+  }
+
+  function renderList(){
+    updateBadges();
+    var filtered = questions;
+    if(currentFilter === 'selected') filtered = questions.filter(isSelected);
+    if(currentFilter === 'pending') filtered = questions.filter(function(q){ return !isSelected(q); });
+
+    if(filtered.length === 0){
+      var msg = currentFilter === 'all' ? 'Nenhuma pergunta recebida ainda.' : 
+                currentFilter === 'selected' ? 'Nenhuma pergunta selecionada.' : 
+                'Todas as perguntas já foram selecionadas.';
+      manageList.innerHTML = '<div style="text-align:center;padding:50px 20px;border-radius:12px;border:2px dashed var(--border);color:var(--muted);font-size:14px;background:var(--card);"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;opacity:.4;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' + msg + '</div>';
+      return;
+    }
+
+    var colors = ['var(--accent)', 'var(--accent2)', '#6b7280'];
+    manageList.innerHTML = filtered.map(function(q){
+      var idx = questions.indexOf(q);
+      var color = colors[idx % 3];
+      var sel = isSelected(q);
+      return '<div class="question-card rounded-xl p-4" style="background:var(--card);border:1px solid ' + (sel ? 'var(--accent)' : 'var(--border)') + ';border-left:4px solid ' + color + ';box-shadow:0 1px 3px rgba(0,0,0,.04);display:flex;gap:14px;align-items:flex-start;"><div class="checkbox-custom ' + (sel ? 'checked' : '') + '" data-idx="' + idx + '"></div><div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;"><div style="width:26px;height:26px;border-radius:50%;background:' + color + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">' + (q.nome ? q.nome.charAt(0).toUpperCase() : '?') + '</div><span style="font-weight:600;color:var(--text);font-size:13px;">' + (q.nome || 'Anônimo') + '</span><span style="color:var(--muted);font-size:11px;">· ' + (q.horario || '') + '</span>' + (sel ? '<span class="selected-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>SELECIONADA</span>' : '') + '</div><p style="color:var(--text);font-size:14px;line-height:1.5;margin:0;">' + escapeHtml(q.pergunta) + '</p></div></div>';
+    }).join('');
+
+    document.querySelectorAll('.checkbox-custom').forEach(function(cb){
+      cb.addEventListener('click', function(){
+        var idx = parseInt(cb.dataset.idx);
+        var q = questions[idx];
+        var newVal = isSelected(q) ? 'FALSE' : 'TRUE';
+        cb.style.opacity = '0.5';
+        
+        fetch(API_URL + '/pergunta/' + encodeURIComponent(q.pergunta), {
+          method: 'PATCH',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({data: {selecionada: newVal}})
+        })
+        .then(function(r){ if(r.ok) return r.json(); throw new Error(); })
+        .then(function(){ q.selecionada = newVal; renderList(); })
+        .catch(function(){ alert('Erro ao atualizar. Tente novamente.'); cb.style.opacity = '1'; });
+      });
+    });
+  }
+
+  function loadQuestions(){
+    manageList.innerHTML = '<div class="loading">Carregando perguntas...</div>';
+    fetch(API_URL)
+    .then(function(r){ return r.json(); })
+    .then(function(data){ 
+      questions = data; 
+      renderList(); 
+    })
+    .catch(function(){
+      manageList.innerHTML = '<div style="text-align:center;padding:50px 20px;border-radius:12px;border:2px dashed var(--border);color:#dc2626;font-size:14px;background:var(--card);">Erro ao carregar. Clique em "Atualizar".</div>';
+    });
+  }
+
+  loadQuestions();
+  setInterval(loadQuestions, 30000); // Atualiza automaticamente a cada 30 segundos
+})();
+</script>
+</html>
