@@ -130,18 +130,23 @@
   }
 
   function loadQuestions(){
-    manageList.innerHTML = '<div class="loading">Carregando perguntas...</div>';
-    fetch(API_URL)
-    .then(function(r){ return r.json(); })
-    .then(function(data){ 
-      questions = data; 
-      renderList(); 
-    })
-    .catch(function(){
-      manageList.innerHTML = '<div style="text-align:center;padding:50px 20px;border-radius:12px;border:2px dashed var(--border);color:#dc2626;font-size:14px;background:var(--card);">Erro ao carregar. Clique em "Atualizar".</div>';
-    });
-  }
-
+  manageList.innerHTML = '<div class="loading">Carregando perguntas...</div>';
+  fetch(API_URL)
+  .then(function(r){ 
+    console.log('Status:', r.status);
+    if(!r.ok) throw new Error('Erro ' + r.status + ' - ' + r.statusText);
+    return r.json(); 
+  })
+  .then(function(data){ 
+    console.log('Dados recebidos:', data);
+    questions = data; 
+    renderList(); 
+  })
+  .catch(function(err){
+    console.error('Erro completo:', err);
+    manageList.innerHTML = '<div style="text-align:center;padding:30px 20px;border-radius:12px;border:2px solid var(--accent);color:var(--accent);font-size:14px;background:var(--accent-soft);"><strong>Erro ao carregar:</strong><br><br>' + err.message + '<br><br>Verifique se o link do SheetDB está correto no código e se a planilha está compartilhada como "Qualquer pessoa com o link pode visualizar".</div>';
+  });
+}
   loadQuestions();
   setInterval(loadQuestions, 30000); // Atualiza automaticamente a cada 30 segundos
 })();
