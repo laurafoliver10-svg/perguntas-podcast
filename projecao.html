@@ -99,15 +99,18 @@
     nextBtn.disabled = currentProjIndex >= selectedQuestions.length - 1;
   }
 
-  function loadSelected(){
-    fetch(API_URL + '?selecionada=TRUE')
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      selectedQuestions = data;
-      render();
-    })
-    .catch(function(){ console.log('Erro ao atualizar'); });
-  }
+function loadSelected(){
+  fetch(API_URL)
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    // FILTRA MANUALMENTE SOMENTE AS QUE TEM selecionada = TRUE
+    selectedQuestions = data.filter(function(q){
+      return q.selecionada === 'TRUE' || q.selecionada === true || q.selecionada === 'true';
+    });
+    render();
+  })
+  .catch(function(){ console.log('Erro ao atualizar'); });
+}
 
   prevBtn.addEventListener('click', function(){
     if(currentProjIndex > 0){ currentProjIndex--; render(); }
